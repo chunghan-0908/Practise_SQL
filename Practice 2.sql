@@ -21,10 +21,11 @@ WHERE skill IN ('Python', 'Tableau', 'PostgreSQL')
 ORDER BY candidate_id ASC;
 
 --EX6
-SELECT user_id, MIN(post_date::date) - MAX(post_date::date) AS days_between
+SELECT user_id, DATE(MAX(post_date::date)) - DATE(MIN(post_date::date)) AS days_between
 FROM posts
 WHERE DATE_PART('year', post_date::date) = 2021
-GROUP BY user_id;
+GROUP BY user_id
+HAVING COUNT(post_id) >= 2;
 
 --EX7
 SELECT card_name, MAX(issued_amount) - MIN(issued_amount) AS difference 
