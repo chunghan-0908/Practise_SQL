@@ -10,15 +10,16 @@ FROM STATION
 
 --EX3
 --EX4
-SELECT item_count, AVG(order_occurrences) AS AVG_ORDER
+SELECT ROUND(CAST(sum(item_count * order_occurrences)/sum(order_occurrences) as DECIMAL),1) as mean
 FROM items_per_order
 GROUP BY item_count;
 
 --EX5
-SELECT * 
+SELECT candidate_id 
 FROM candidates
 WHERE skill IN ('Python', 'Tableau', 'PostgreSQL')
-ORDER BY candidate_id ASC;
+GROUP BY candidate_id
+HAVING COUNT(skill) = 3;
 
 --EX6
 SELECT user_id, DATE(MAX(post_date::date)) - DATE(MIN(post_date::date)) AS days_between
