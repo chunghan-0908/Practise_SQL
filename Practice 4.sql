@@ -7,10 +7,10 @@ FROM viewership;
 
 --EX2
 SELECT x, y, z,
-    CASE WHEN x + y > z AND x + z > y AND y + z > x THEN 'Yes' 
-    ELSE 'No'
-    END AS triangle
-FROM Triangle
+  CASE WHEN x + y > z AND x + z > y AND y + z > x THEN 'Yes' 
+  ELSE 'No'
+  END AS triangle
+FROM Triangle;
   
 --EX3
 SELECT 
@@ -29,5 +29,5 @@ SUM(CASE WHEN pclass = 1 THEN 1 ELSE 0 END) AS first_class,
 SUM(CASE WHEN pclass = 2 THEN 1 ELSE 0 END) AS second_classs,
 SUM(CASE WHEN pclass = 3 THEN 1 ELSE 0 END) AS third_class
 FROM titanic
-GROUP BY survived
+GROUP BY survived;
 
