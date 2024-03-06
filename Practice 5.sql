@@ -1,1 +1,15 @@
+--PRACTICE 5
+--EX1
+SELECT CONTINENT, AVG(CI.POPULATION) AS AVG_POPULATION
+FROM COUNTRY COUN
+INNER JOIN CITY CI ON COUN.CODE = CI.COUNTRYCODE
+GROUP BY CONTINENT;
 
+--EX2
+SELECT ROUND(COUNT(t.email_id)/COUNT(e.email_id),2) AS activation_rate
+FROM emails e
+LEFT JOIN texts t
+  ON e.email_id = t.email_id
+WHERE t.signup_action = 'Confirmed';
+
+--EX3
