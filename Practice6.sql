@@ -10,8 +10,8 @@ WITH job_CTE AS (
   GROUP BY company_id, title, description
 ) 
 SELECT COUNT(DISTINCT company_id) AS duplicate_companies
-FROM job_CTE 
-WHERE job_count > 11;
+FROM job_CTE
+WHERE job_count > 1;
 
 --EX2
 WITH cte_top2_product 
@@ -46,6 +46,19 @@ WHERE like_count = 0
 ORDER BY page_id ASC;
 
 --EX5?
+WITH cte_count_user 
+AS (SELECT EXTRACT(MONTH FROM a1.event_date) AS month, a1.user_id
+FROM user_actions a1 
+WHERE EXTRACT(MONTH FROM a1.event_date) = 7 AND user_id IN (SELECT a2.user_id
+                                                          FROM user_actions a2
+                                                          WHERE a1.user_id = a2.user_id 
+                                                          AND EXTRACT(MONTH FROM a2.event_date) = 6
+                                                          )
+GROUP BY EXTRACT(MONTH FROM a1.event_date), a1.user_id)
+SELECT month, COUNT(user_id) AS monthly_active_users
+FROM cte_count_user
+GROUP BY month
+
 --EX6
 SELECT CONCAT(YEAR(trans_date),'-',MONTH(trans_date)) AS month, country, 
 COUNT(id) AS trans_count, 
@@ -107,5 +120,41 @@ FROM job_CTE
 WHERE job_count > 1
 
 --EX11
+WITH 
+cte_1 AS (
+    SELECT u.name as results, COUNT(m1.rating) as count_rating
+    FROM MovieRating m1
+    INNER JOIN Users u ON m1.user_id = u.user_id
+    GROUP BY u.name
+    ORDER BY COUNT(m1.rating) DESC, u.name
+    LIMIT 1
+),
+cte_2 AS (
+    SELECT m3.title, AVG(m2.rating) as avg_rating
+    FROM MovieRating m2
+    INNER JOIN Movies m3 ON m2.movie_id = m3.movie_id
+    WHERE EXTRACT(YEAR FROM m2.created_at) = 2020 
+        AND EXTRACT(MONTH FROM m2.created_at) = 2 
+    ORDER BY AVG(m2.rating) DESC, m3.title
+    LIMIT 1
+)
+SELECT results FROM cte_1 
+UNION ALL 
+SELECT title FROM cte_2;
+
 --EX12
+WITH cte AS (
+    SELECT requester_id AS id, COUNT(accepter_id) AS num
+    FROM RequestAccepted
+    GROUP BY requester_id
+    UNION ALL 
+    SELECT accepter_id AS id, COUNT(accepter_id) AS num
+    FROM RequestAccepted
+    GROUP BY accepter_id
+  )
+SELECT id, SUM(num) as num 
+FROM cte
+GROUP BY id
+ORDER BY SUM(num) DESC
+LIMIT 1
 
