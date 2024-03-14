@@ -38,7 +38,19 @@ GROUP BY transaction_date, user_id
 ORDER BY transaction_date, user_id;
 
 --EX5?
+
+
 --EX6
+WITH cte_top3_eaners 
+AS (SELECT d.name as Department , e.name as Employee , salary as Salary,
+DENSE_RANK() OVER(PARTITION BY d.id ORDER BY salary DESC) as salary_rank
+FROM employee e
+INNER JOIN department d ON e.departmentId = d.Id)
+SELECT Department, Employee, Salary
+FROM cte_top3_eaners
+WHERE salary_rank <= 3
+ORDER BY Salary DESC
+    
 --EX7
 WITH cte_top2_product 
 AS (SELECT product, 
@@ -54,5 +66,16 @@ ORDER BY total_spend DESC
 LIMIT 2;
 
 --EX8
+WITH cte_top10_artist_Rank 
+AS (SELECT a.artist_name,
+DENSE_RANK() OVER(ORDER BY COUNT(s.song_id) DESC) AS artist_rank
+FROM artists a
+INNER JOIN songs s ON a.artist_id = s.artist_id
+INNER JOIN global_song_rank  r ON r.song_id = s.song_id
+WHERE rank <= 10 
+GROUP BY a.artist_name)
+SELECT * 
+FROM cte_top10_artist_Rank 
+WHERE artist_rank <= 5;
 
 
